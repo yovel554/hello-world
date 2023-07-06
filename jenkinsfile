@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    
+    environment {
+    	PATH="$PATH:$HOME/bin:/usr/lib/jvm/java-11-openjdk:/opt/maven:/opt/maven/bin
+    }
     stages {
         stage('Checkout') {
             steps {
