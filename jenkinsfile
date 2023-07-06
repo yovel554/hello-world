@@ -9,7 +9,7 @@ pipeline {
         stage('Build') {
             steps {
 		sh 'sudo chown root:root pom.xml'
-                sh 'mvn clean install'
+                sh 'sudo mvn clean install'
             }
         }
     }
