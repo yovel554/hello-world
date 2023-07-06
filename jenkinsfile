@@ -8,7 +8,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-		sh 'chown root:root pom.xml'
+		sh 'sudo chown root:root pom.xml'
                 sh 'sh mvn clean install'
             }
         }
