@@ -1,8 +1,9 @@
+
 pipeline {
     agent any
     
     environment {
-    	PATH="$PATH:$HOME/bin:/usr/lib/jvm/java-11-openjdk:/opt/maven:/opt/maven/bin
+        PATH="$PATH:$HOME/bin:/usr/lib/jvm/java-11-openjdk-11.0.19.0.7-1.amzn2.0.1.x86_64:/opt/maven:/opt/maven/bin"
     }
     stages {
         stage('Checkout') {
@@ -10,10 +11,14 @@ pipeline {
                 git 'https://github.com/yovel554/hello-world.git'
             }
         }
-        stage('Build') {
+        stage('Build and publish') {
             steps {
-		sh 'sudo chown root:root pom.xml'
-                sh 'sudo mvn clean install'
+                sh 'sudo su -'
+                sh 'mvn clean install'
+                sshPublisher(publishers: [sshPublisherDesc(configName: 'ansible-server', transfers: [sshTransfer(cleanRemote: false, excludes:'', execCommand: '''cd /opt/docker;
+		sleep 10;
+		ansible-playbook deploy.yml''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '//opt//docker', remoteDirectorySDF: false, removePrefix: 'webapp/target/', sourceFiles: 'webapp/target/*.war')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                
             }
         }
     }
